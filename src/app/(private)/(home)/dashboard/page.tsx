@@ -2,42 +2,39 @@
 
 import { useEffect, useState } from 'react'
 import { TableList } from './table/table-list'
-import { useAppDispatch } from '@/lib/hook'
-import {columns} from '../dashboard/table/data-table/columns'
-
-const DATA = [
-  {
-    id: '7',
-    email: 'Goro@gmail.com',
-    first_name: 'Adam',
-    Last_name: 'Walker',
-    avatar: 'https://reqres.in/img/faces/7-image.jpg'
-  },
-  {
-    id: '7',
-    email: 'Goro@gmail.com',
-    first_name: 'Adam',
-    Last_name: 'Walker',
-    avatar: 'https://reqres.in/img/faces/7-image.jpg'
-  }
-]
+import { useAppDispatch, useAppSelector } from '@/lib/hook'
+import { columns } from '../dashboard/table/data-table/columns'
+import { getClientAPI } from '@/apis/client'
+import { UserData } from '@/types'
 
 export default function DashboardPage () {
   const dispatch = useAppDispatch()
-  const [data, setData] = useState(DATA)
+  const userData = useAppSelector((state) => state.userData)
+  const [data, setData] = useState<UserData[]>([]);
 
   useEffect(() => {
-    getClientList()
+    getClientList('1')
   }, [])
 
-  function getClientList () {}
+  function getClientList (page: string) {
+    dispatch(
+      getClientAPI({
+        page: page
+      })
+    ).then(res => {})
+  }
 
-  console.log('data', data)
-  console.log('columns', columns)
+  useEffect(() => {
+    if(userData.userList){
+      setData(userData.userList);
+    }
+  }, [userData])
+
+  // console.log('data', userData)
   return (
     <>
       <div className=''>
-        <TableList data={data} columns={columns}></TableList>
+        <TableList data={data? data : []} columns={columns} getClientList={getClientList}></TableList>
       </div>
     </>
   )

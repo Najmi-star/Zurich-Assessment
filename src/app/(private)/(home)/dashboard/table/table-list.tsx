@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import { useAppSelector } from '@/lib/hook'
 import {
   ColumnDef,
   RowModel,
@@ -19,24 +20,28 @@ import {
   useReactTable
 } from '@tanstack/react-table'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 interface DataTableProps<TData, TValue> {
   columns: Array<ColumnDef<TData, TValue>>
   data: TData[]
+  getClientList: (page: string) => void
 }
 
 export function TableList<TData, TValue> ({
   columns,
-  data
+  data,
+  getClientList
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     columns,
     data,
-    getCoreRowModel: getCoreRowModel()
+    getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
   })
+  const userData = useAppSelector((state) => state.userData)
 
-  console.log('check', table.getRowModel())
+  // console.log('check', table.getRowModel())
   return (
     <>
       <div>
@@ -72,27 +77,28 @@ export function TableList<TData, TValue> ({
       </div>
       <div className='flex items-center justify-end space-x-2 py mt-8'>
         <div>
-          Page {table.getState().pagination.pageIndex + 1} of{' '}
-          {table.getPageCount()}
+          Page {userData.page} of {userData.totalPage}
         </div>
         <div className='space-x-2'>
           <Button
             variant='outline'
             size='sm'
+            className='bg-sky-200'
             onClick={() => {
-              table.previousPage()
+              getClientList((userData.page - 1).toString())
             }}
-            disabled={!table.getCanPreviousPage()}
+            disabled={userData.page == 1}
           >
             Previous
           </Button>
           <Button
             variant='outline'
             size='sm'
+            className='bg-sky-200'
             onClick={() => {
-              table.nextPage()
+              getClientList((userData.page + 1).toString())
             }}
-            disabled={!table.getCanNextPage()}
+            disabled={userData.page == userData.totalPage}
           >
             Next
           </Button>
