@@ -6,14 +6,22 @@ import { useAppDispatch, useAppSelector } from '@/lib/hook'
 import { columns } from '../dashboard/table/data-table/columns'
 import { getClientAPI } from '@/apis/client'
 import { UserData } from '@/types'
+import { PAGE_ONE } from '@/lib/constant'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function DashboardPage () {
   const dispatch = useAppDispatch()
-  const userData = useAppSelector((state) => state.userData)
-  const [data, setData] = useState<UserData[]>([]);
+  const userData = useAppSelector(state => state.userData)
+  const [data, setData] = useState<UserData[]>([])
+  const {data: session} = useSession()
+
+  if (!session) {
+    useRouter().push('/login')
+  }
 
   useEffect(() => {
-    getClientList('1')
+    getClientList(PAGE_ONE)
   }, [])
 
   function getClientList (page: string) {
@@ -25,16 +33,19 @@ export default function DashboardPage () {
   }
 
   useEffect(() => {
-    if(userData.userList){
-      setData(userData.userList);
+    if (userData.userList) {
+      setData(userData.userList)
     }
   }, [userData])
 
-  // console.log('data', userData)
   return (
     <>
       <div className=''>
-        <TableList data={data? data : []} columns={columns} getClientList={getClientList}></TableList>
+        <TableList
+          data={data ? data : []}
+          columns={columns}
+          getClientList={getClientList}
+        ></TableList>
       </div>
     </>
   )

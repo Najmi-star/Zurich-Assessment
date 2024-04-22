@@ -8,7 +8,7 @@ const initialState: User = {
     perPage: 0,
     totalData: 0,
     totalPage: 0,
-    loading: true
+    loading: false
 }
 
 export const userInfoSlice = createSlice({
@@ -23,7 +23,6 @@ export const userInfoSlice = createSlice({
             state.loading = true
         })
         .addCase(getClientAPI.fulfilled, (state, action) => {
-            console.log('payload', action.payload)
             const payload = action.payload
             state.loading = false
 

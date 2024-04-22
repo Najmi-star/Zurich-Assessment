@@ -13,8 +13,11 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger
 } from '@/components/ui'
+import { signOut, useSession } from 'next-auth/react'
 
 export function Header ({ children }: { children?: ReactNode }) {
+  const { data, status } = useSession()
+
   return (
     <section className='w-full bg-white sticky border-2 b-slate-500 flex-none'>
       <div className='h-16 flex justify-between py-2 px-8'>
@@ -32,14 +35,14 @@ export function Header ({ children }: { children?: ReactNode }) {
             <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div className='text-center ml-4 mr-4'>Maxwell</div>
+          <div className='text-center ml-4 mr-4'>{data?.user?.name}</div>
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className='bg-yellow-200'></NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className='grid gap-2 p-2'>
-                      <Link href='/login'>Logout</Link>
+                      <button onClick={() => signOut()}>Logout</button>
                     </ul>
                   </NavigationMenuContent>
               </NavigationMenuItem>

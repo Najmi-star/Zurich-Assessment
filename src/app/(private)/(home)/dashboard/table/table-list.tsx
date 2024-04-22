@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -37,44 +38,52 @@ export function TableList<TData, TValue> ({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
+    manualPagination: true
   })
-  const userData = useAppSelector((state) => state.userData)
+  const userData = useAppSelector(state => state.userData)
 
-  // console.log('check', table.getRowModel())
   return (
     <>
-      <div>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
-                  return (
-                    <TableHead key={header.id}>
+      {!userData.loading ? (
+        <div>
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map(headerGroup => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map(header => {
+                    return (
+                      <TableHead key={header.id}>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </TableHead>
+                    )
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.map(row => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map(cell => (
+                    <TableCell key={cell.id}>
                       {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
+                        cell.column.columnDef.cell,
+                        cell.getContext()
                       )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.map(row => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <div className='space-y-2'>
+          <Skeleton className='h-28 w-full bg-gray-300' />
+        </div>
+      )}
       <div className='flex items-center justify-end space-x-2 py mt-8'>
         <div>
           Page {userData.page} of {userData.totalPage}
