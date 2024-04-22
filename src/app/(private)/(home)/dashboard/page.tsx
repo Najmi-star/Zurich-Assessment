@@ -17,7 +17,7 @@ export default function DashboardPage () {
   const {data: session} = useSession()
 
   if (!session) {
-    useRouter().push('/login')
+    useRouter().push('/error')
   }
 
   useEffect(() => {

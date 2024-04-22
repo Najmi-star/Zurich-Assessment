@@ -18,7 +18,9 @@ export const LoginForm = () => {
         router.push('/dashboard')
       } else if (status === USER_UNAUNTHETICATED) {
         // User is not authenticated, set flag
-        setLoginAttempt(true)
+        // setLoginAttempt(true)
+        router.push('/error')
+        
       }
     }
   }, [data, status, router])
@@ -44,9 +46,9 @@ export const LoginForm = () => {
             height={10}
           ></Image>
         </div>
-        <p className='text-red-400 font-bold text-lg mt-2'>
+        {/* <p className='text-red-400 font-bold text-lg mt-2'>
           {loginAttempt ? 'Login failed, please try again' : ''}
-        </p>
+        </p> */}
       </div>
     </section>
   )
