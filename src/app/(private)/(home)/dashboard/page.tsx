@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/hook'
 import { columns } from '../dashboard/table/data-table/columns'
 import { getClientAPI } from '@/apis/client'
 import { UserData } from '@/types'
-import { PAGE_ONE } from '@/lib/constant'
+import { PAGE_ONE, USER_UNAUNTHETICATED } from '@/lib/constant'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
@@ -14,10 +14,10 @@ export default function DashboardPage () {
   const dispatch = useAppDispatch()
   const userData = useAppSelector(state => state.userData)
   const [data, setData] = useState<UserData[]>([])
-  const {data: session} = useSession()
+  const {data: session, status} = useSession()
 
-  if (!session) {
-    useRouter().push('/error')
+  if (status == USER_UNAUNTHETICATED) {
+    useRouter().push('/login')
   }
 
   useEffect(() => {
