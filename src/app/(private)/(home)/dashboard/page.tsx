@@ -14,10 +14,10 @@ export default function DashboardPage () {
   const dispatch = useAppDispatch()
   const userData = useAppSelector(state => state.userData)
   const [data, setData] = useState<UserData[]>([])
-  const {data: session, status} = useSession()
+  const { data: session, status } = useSession()
 
-  if (status == USER_UNAUNTHETICATED) {
-    useRouter().push('/login')
+  if (!session) {
+    useRouter().push('/error')
   }
 
   useEffect(() => {
